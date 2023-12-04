@@ -89,4 +89,30 @@ LIMIT 1 OFFSET $id;
       return null; // Return null if no matching entry is found
     }
   }
+
+  Future deleteById(int? id) async {
+    final db = await instance.database;
+    await db.delete(
+      'diary',
+      where: '${NoteTable.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int?> getIdByTitle(String title) async {
+    final db = await instance.database;
+    List<Map<String, dynamic>> result = await db.query(
+      'diary',
+      columns: [NoteTable.id],
+      where: '${NoteTable.title} = ?',
+      whereArgs: [title],
+    );
+
+    if (result.isNotEmpty) {
+      print(result.first[NoteTable.id] as int);
+      return result.first[NoteTable.id] as int;
+    } else {
+      return null;
+    }
+  }
 }

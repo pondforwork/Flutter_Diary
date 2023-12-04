@@ -113,9 +113,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             );
                           },
-                          onLongPress: (){
-                            showDeleteDialog(context,1);
+                          onLongPress: () async {
+                            String title = item['title'] ?? '';
+                            Future<int?> id =
+                                _databaseHelper.getIdByTitle(title);
+                            await showDeleteDialog(context, id);
+                            print(title);
                             print("Delete");
+                            await _fetchDiaries();
+                            setState(() {});
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -168,19 +174,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 activeDotColor: Color.fromARGB(255, 0, 0, 0),
               ),
             ),
-          // TextButton(
-          //   onPressed: () async {
-          //     await _fetchDiaries();
-          //     // generatePalette();
-          //   },
-          //   child: Text("Refresh Data"),
-          // ),
-          // TextButton(
-          //   onPressed: () async {
-          //     await _databaseHelper.deleteAllDiaries();
-          //   },
-          //   child: Text("Delete"),
-          // )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -201,37 +194,41 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-showDeleteDialog(BuildContext context, int index) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        // _dbHelper.deleteByIndex(index);
-        // setState(() {});
-        Navigator.pop(context);
-      },
-    );
-    // set up the Cancel button
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete This To Do?"),
-      content: Text("Are You Sure?"),
-      actions: [
-        cancelButton,
-        okButton,
-      ],
-    );
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+showDeleteDialog(BuildContext context, Future<int?> Id) async {
+  DatabaseHelper _databaseHelper = DatabaseHelper.instance;
+  print("ID");
+  print(Id);
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: ()  {
+       _databaseHelper.deleteById(Id as int?);
+      // _dbHelper.deleteByIndex(index);
+      // setState(() {});
+      Navigator.pop(context);
+    },
+  );
+  // set up the Cancel button
+  Widget cancelButton = TextButton(
+    child: Text("Cancel"),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("Delete This To Do?"),
+    content: Text("Are You Sure?"),
+    actions: [
+      cancelButton,
+      okButton,
+    ],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
