@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -61,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: Column(
         children: [
@@ -122,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             print(title);
                             print("Delete");
                             await _fetchDiaries();
+                            print("FetchDiarieds");
                            
                           },
                           child: Column(
@@ -193,9 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
-
-showDeleteDialog(BuildContext context, Future<int?> Id) async {
+  showDeleteDialog(BuildContext context, Future<int?> Id) async {
   DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   print("ID");
   print(Id);
@@ -209,7 +210,8 @@ showDeleteDialog(BuildContext context, Future<int?> Id) async {
     onPressed: () async {
       // Use the actual idValue in the delete operation
       await _databaseHelper.deleteById(idValue);
-      Navigator.pop(context);
+      Navigator.pop(context,true);
+      _fetchDiaries();
     },
   );
 
@@ -239,4 +241,7 @@ showDeleteDialog(BuildContext context, Future<int?> Id) async {
     },
   );
 }
+}
+
+
 
