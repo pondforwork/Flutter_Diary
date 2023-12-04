@@ -90,7 +90,7 @@ LIMIT 1 OFFSET $id;
     }
   }
 
-  Future deleteById(int? id) async {
+  deleteById(int? id) async {
     final db = await instance.database;
     await db.delete(
       'diary',

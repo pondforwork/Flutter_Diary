@@ -118,10 +118,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             Future<int?> id =
                                 _databaseHelper.getIdByTitle(title);
                             await showDeleteDialog(context, id);
+                            
                             print(title);
                             print("Delete");
                             await _fetchDiaries();
-                            setState(() {});
+                           
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -198,16 +199,20 @@ showDeleteDialog(BuildContext context, Future<int?> Id) async {
   DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   print("ID");
   print(Id);
+  
+  // Get the actual value from the Future
+  int? idValue = await Id;
+
   // set up the button
   Widget okButton = TextButton(
     child: Text("OK"),
-    onPressed: ()  {
-       _databaseHelper.deleteById(Id as int?);
-      // _dbHelper.deleteByIndex(index);
-      // setState(() {});
+    onPressed: () async {
+      // Use the actual idValue in the delete operation
+      await _databaseHelper.deleteById(idValue);
       Navigator.pop(context);
     },
   );
+
   // set up the Cancel button
   Widget cancelButton = TextButton(
     child: Text("Cancel"),
@@ -215,6 +220,7 @@ showDeleteDialog(BuildContext context, Future<int?> Id) async {
       Navigator.pop(context);
     },
   );
+
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: Text("Delete This To Do?"),
@@ -224,6 +230,7 @@ showDeleteDialog(BuildContext context, Future<int?> Id) async {
       okButton,
     ],
   );
+
   // show the dialog
   showDialog(
     context: context,
@@ -232,3 +239,4 @@ showDeleteDialog(BuildContext context, Future<int?> Id) async {
     },
   );
 }
+
